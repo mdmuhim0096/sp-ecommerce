@@ -1,0 +1,161 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+*::-webkit-scrollbar {
+    width: 0;
+}
+
+.spin-animate {
+    animation: spin_ 0.3s linear infinite;
+}
+
+#spinlight {
+    animation: spin_2 2s linear infinite;
+    scale: 180%;
+}
+
+.scale {
+    scale: 300%;
+}
+
+#spinlight>.fan {
+    background: repeating-conic-gradient(#ff2770 0%, #ff2770 5%, transparent 5%, transparent 40%, #ff2770 50%);
+}
+
+#spinlight>.fan2 {
+    background: repeating-conic-gradient(#0685ce 0%, #0685ce 5%, transparent 5%, transparent 40%, #0685ce 50%);
+}
+
+@keyframes spin_ {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes spin_2 {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.recharts-surface {
+    width: 100% !important;
+    padding: 0 !important;
+}
+
+.bganimate {
+    animation: wave 3s linear infinite;
+    background: linear-gradient(to bottom right, #4abeec, orange);
+}
+
+@keyframes wave {
+    0% {
+        filter: hue-rotate(0deg);
+    }
+
+    100% {
+        filter: hue-rotate(360deg);
+    }
+}
+
+
+
+/* ========= style for translate ======== */
+
+#google_translate_element,
+.VIpgJd-ZVi9od-ORHb-OEVmcd {
+    display: none !important;
+}
+
+body {
+    background-color: transparent !important;
+}
+
+/* html{
+    margin-top: -2.5rem;
+} */
+
+
+#goog-gt-vt {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+}
+
+#VIpgJd-yAWNEb-VIpgJd-fmcmS-sn54Q {
+    background-color: transparent !important;
+    border: none !important;
+}
+
+
+/* Hide Google Translate Top Banner */
+.goog-te-banner-frame {
+    display: none !important;
+    visibility: hidden !important;
+}
+
+/* Remove top spacing caused by banner */
+body {
+    top: 0 !important;
+}
+
+/* Hide Google Translate Popup Menu Frame */
+.goog-te-menu-frame {
+    display: none !important;
+    visibility: hidden !important;
+}
+
+/* Hide injected elements and prevent space */
+iframe.goog-te-menu-frame.skiptranslate {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    width: 0 !important;
+    border: 0 !important;
+}
+
+/* Hide Translate Dropdown Element */
+.goog-te-gadget {
+    display: none !important;
+    visibility: hidden !important;
+}
+
+font {
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.skiptranslate {
+    visibility: hidden !important;
+    display: none !important;
+}
+
+.VIpgJd-ZVi9od-aZ2wEe-wOHMyf {
+    display: none !important;
+}
+
+.carousel-slider {
+    display: flex !important;
+    flex-direction: column !important;
+}
+
+.control-dots {
+    position: static !important;
+    order: 2 !important;
+}
+
+.control-dots li {
+    width: 14px !important;
+    height: 3px !important;
+    border-radius: 0 !important;
+}
