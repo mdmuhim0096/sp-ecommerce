@@ -1,12 +1,12 @@
 import { useEffect } from 'react'
 import { orderStore } from "../store/order";
 import Navbar from "../components/Navbar";
-import { ListCollapse, Clock, CalendarCheck, OctagonX, Waves, Pickaxe, CircleDollarSign, MapPinHouse, ChevronDown, ListMinus, CloudCheck, ShoppingBasket, Banknote, Building2, House, Warehouse, PhoneCall, LineSquiggle, PackageSearch, ArrowDown, Trash } from "lucide-react";
+import { ListCollapse, Clock, CalendarCheck, OctagonX, Waves, Pickaxe, CircleDollarSign, MapPinHouse, ChevronDown, ListMinus, CloudCheck, ShoppingBasket, Banknote, Building2, House, Warehouse, PhoneCall, LineSquiggle, PackageSearch, ArrowDown, Trash, Loader } from "lucide-react";
 import { Link } from "react-router-dom";
 import Footer from '../components/Footer';
 
 const OrderPage = () => {
-    const { getOrder, order, rejectOrder, deleteOrder, makeApproved } = orderStore();
+    const { getOrder, order, rejectOrder, deleteOrder, makeApproved, loading } = orderStore();
 
     useEffect(() => {
         getOrder();
@@ -52,7 +52,7 @@ const OrderPage = () => {
                     <div key={index}>
                         <div className='flex gap-10'>
                             <h1 className='pl-4'>Order No:= {index + 1}</h1>
-                            <h1 className='pl-4 font-bold'><span className='text-blue-500'>Status</span> :- <span className={`capitalize ${orderItem?.status === "pending" ? "text-yellow-300" : orderItem?.status === "shipping" ? "text-lime-400" : orderItem?.status === "deliverd" ? "text-emerald-400" : "text-red-600"}`}>{orderItem?.status}</span></h1>
+                            <h1 className='pl-4 font-bold'><span className='text-blue-500'>Status</span> :- <span className={`capitalize ${orderItem?.status === "pending" ? "text-yellow-300" : orderItem?.status === "shipping" ? "text-lime-400" : orderItem?.status === "delivered" ? "text-emerald-400" : "text-red-600"}`}>{orderItem?.status}</span></h1>
                         </div>
                         <div
                             className='grid sm:grid-cols-2 md:grid-cols-3 gap-4 py-2 px-4 mb-10'
@@ -221,26 +221,26 @@ const OrderPage = () => {
                                     </div>
                                     <ChevronDown id={`action-${orderItem._id}-${index}`} />
                                 </div>
-                                <div className='p-3'>
-                                    <div className='my-2 flex items-center justify-center gap-4 p-2 cursor-pointer rounded-lg bg-green-700'
+                                <div className='p-3 flex flex-col lg:flex-row w-full gap-1'>
+                                    <div className='my-2 flex items-center justify-center gap-2 p-2 cursor-pointer rounded-lg bg-green-700 w-full'
                                         onClick={() => { handelApprovedOrder(orderItem._id) }}
                                     >
-                                        {orderItem?.isApproved && <CalendarCheck size={20} className='text-green-200' />}
-                                        <span className='ml-2 text-sm text-green-200'> Approved</span>
+                                        {loading ? <Loader color='#fff' className='animate-spin' /> : <>{orderItem?.isApproved && <CalendarCheck size={20} className='text-green-200' />}
+                                            <span className='ml-2 text-sm text-green-200'> Approved</span></>}
                                     </div>
 
                                     <div
-                                        className='my-2 flex items-center justify-center gap-4 p-2 cursor-pointer rounded-lg bg-red-500'
+                                        className='my-2 flex items-center justify-center gap-4 p-2 cursor-pointer rounded-lg bg-red-500 w-full'
                                         onClick={async () => {
                                             await rejectOrder(orderItem._id);
                                         }}
                                     >
-                                        {orderItem?.isRejected && <OctagonX size={20} className='text-red-200' />}
-                                        <span className='ml-2 text-sm font-medium text-red-200'>Rejected</span>
+                                        {loading ? <Loader color='#fff' className='animate-spin' /> : <>{orderItem?.isRejected && <OctagonX size={20} className='text-red-200' />}
+                                            <span className='ml-2 text-sm font-medium text-red-200'>Rejecte{orderItem?.isRejected && 'd'}</span></>}
                                     </div>
 
                                     <div
-                                        className='my-2 flex items-center justify-center gap-4 p-2 cursor-pointer rounded-lg bg-red-700'
+                                        className='my-2 flex items-center justify-center gap-4 p-2 cursor-pointer rounded-lg bg-red-700 w-full'
                                         onClick={async () => {
                                             await deleteOrder(orderItem._id);
                                         }}

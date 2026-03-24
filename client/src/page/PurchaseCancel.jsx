@@ -2,9 +2,27 @@ import Footer from "../components/Footer";
 import { motion } from "framer-motion";
 import { X, MoveRight } from "lucide-react";
 import { Link } from 'react-router-dom';
-import Navbar from "../components/Navbar"
+import Navbar from "../components/Navbar";
+import { userStore } from "../store/user";
+import { orderStore } from "../store/order";
+import { cartStore } from "../store/cart";
+import { useEffect } from "react";
 
 const PurchaseCancel = () => {
+    const { orderId, hasOrderId } = userStore();
+    const { deleteOrder } = orderStore();
+    const { clearCart } = cartStore();
+
+    useEffect(() => {
+        if (orderId !== null) {
+            async function handelDeleteOrder(id) {
+                await deleteOrder(id);
+                await hasOrderId(false);
+                await clearCart();
+            };
+            handelDeleteOrder(orderId);
+        }
+    }, [orderId]);
 
     return (
         <div>

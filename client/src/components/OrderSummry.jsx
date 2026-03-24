@@ -2,7 +2,7 @@ import { useEffect, useState, useCallback } from "react";
 import { cartStore } from "../store/cart";
 import { userStore } from "../store/user";
 import { Link } from "react-router-dom";
-import { MoveRight } from "lucide-react";
+import { Loader, MoveRight } from "lucide-react";
 import { loadStripe } from "@stripe/stripe-js";
 import axios from "../lib/axios";
 import { toast } from "react-hot-toast";
@@ -31,11 +31,16 @@ const OrderSummry = () => {
   const getUser = userStore((s) => s.getUser);
 
   const [address, setAddress] = useState(INITIAL_ADDRESS);
+  const [isLoading, setLoading] = useState(false);
 
   // ✅ Load data
   useEffect(() => {
     getUser();
     getCupon();
+    function unload() {
+      setLoading(false);
+    }
+    return () => window.addEventListener("beforeunload", unload);
   }, [getUser, getCupon]);
 
   // ✅ FIXED: clean auto-filled data
@@ -84,6 +89,7 @@ const OrderSummry = () => {
 
   // ✅ PAYMENT HANDLER (fixed)
   const handelpayment = useCallback(async () => {
+    setLoading(true);
     try {
       if (!validateForm()) return;
 
@@ -157,10 +163,10 @@ const OrderSummry = () => {
       </div>
 
       <button
-        className="px-2 py-2 rounded-md w-full bg-emerald-600 my-3"
+        className="px-2 py-2 rounded-md w-full bg-emerald-600 my-3 flex justify-center gap-4 items-center"
         onClick={handelpayment}
       >
-        Proceed to Checkout
+        {isLoading ? <Loader className="animate-spin" color="#fff" /> : "Proceed to Checkout"}
       </button>
 
       <div className="w-full text-center">

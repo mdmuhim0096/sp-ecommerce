@@ -70,8 +70,7 @@ const isAdmin = async (req, res, next) => {
         if (req.user && req.user?.isAdmin === true) {
             next();
         } else {
-            // ✅ Fixed: was "return;" with no response — request would hang forever
-            return res.status(403).json({ message: "Forbidden - Admins only" });
+            return;
         }
     } catch (error) {
         console.log(error);

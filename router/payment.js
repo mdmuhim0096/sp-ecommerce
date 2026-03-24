@@ -7,11 +7,12 @@ const Stripe = require("../db/stripe");
 const { protectedRoute } = require("../middleware/auth");
 const { sendOrderEmail } = require("../middleware/mailSender");
 const { clientUrl } = require("../helper/utils");
+const User = require("../schemas/user");
 
 route.post("/createCheckoutSession", protectedRoute, async (req, res) => {
     try {
         const { products, cuponCode, address } = req.body;
-        
+
         if (!Array.isArray(products) || products.length === 0) {
             return res.status(400).json({ message: "Invalid or empty product array" });
         }
@@ -65,6 +66,8 @@ route.post("/createCheckoutSession", protectedRoute, async (req, res) => {
             totalAmount: totalAmount / 100,
             address,
         });
+
+        await User.findByIdAndUpdate(req.user._id, { orderId: order._id }, { new: true });
 
         const session = await Stripe.checkout.sessions.create({
             payment_method_types: ["card"],

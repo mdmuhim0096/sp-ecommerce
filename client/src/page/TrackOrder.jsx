@@ -1,32 +1,56 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { orderStore } from "../store/order";
+import { userStore } from "../store/user";
 import { useParams } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { BookText, ShoppingBasket, Loader, BookA } from "lucide-react";
+import { useState } from "react";
 
 const TrackOrder = () => {
   const { makeDeliverd, getOrderById, order, loading } = orderStore();
+  const { hasOrderId } = userStore();
   const { id } = useParams();
+  const [isDeiliverd, setIsDeiliverd] = useState(false)
 
   useEffect(() => { getOrderById(id) }, []);
 
-  const handelConfirmDaliverd = (id) => {
-    makeDeliverd(id);
+  const handelConfirmDaliverd = async (id) => {
+    await makeDeliverd(id);
+    await getOrderById(id);
+    hasOrderId(false);
+    setIsDeiliverd(true);
   }
 
   const status = order?.status;
 
+  useEffect(() => {
+    if (!id) return;
+
+    const interval = setInterval(async () => {
+      const updatedOrder = await getOrderById(id);
+
+      if (
+        updatedOrder?.status === "cancel" ||
+        updatedOrder?.status === "delivered" || isDeiliverd === true
+      ) {
+        clearInterval(interval);
+      }
+    }, 2000);
+
+    return () => clearInterval(interval);
+  }, [id, getOrderById]);
+
   return (
     <div>
       <Navbar />
-
       <h1
         style={{ textShadow: "2px 2px 20px rgba(255, 255, 255, 0.3), 2px 2px 30px rgba(255, 255, 255, 0.4)" }}
         className='text-3xl mx-2 font-semibold text-white my-10 text-center'
       >My Order</h1>
 
-      <h3 className="w-full md:w-6/12 lg:w-4/12 mx-auto my-4 text-white font-bold px-4 py-2 rounded-lg border border-zinc-700 text-center"><span className="text-blue-500">STATUS</span> : <span className={status === "shipping" ? "text-yellow-300" : "text-emerald-500"}>{status?.toUpperCase()}</span></h3>
+      <h3 className="w-full md:w-6/12 lg:w-4/12 mx-auto my-4 text-white font-bold px-4 py-2 rounded-lg border border-zinc-700 text-center"><span className="text-blue-500">STATUS</span><span className="mx-2">:</span><span
+        className={status === "shipping" ? "text-yellow-300" : status === "delivered" ? "text-emerald-500" : status === "pending" ? "text-indigo-500" : "text-red-500"}>{status?.toUpperCase()}</span></h3>
 
       <div className="md:mt-10">
         <h3 className="text-white">
@@ -73,7 +97,7 @@ const TrackOrder = () => {
           </div>
         ))}
       </div>
-      {order?.status !== "deliverd" && <button
+      {order?.status === "shipping" && order?.isApproved === true && <button
         onClick={() => { handelConfirmDaliverd(id); }}
         className="px-3 py-2 rounded-lg bg-emerald-600 text-center text-white font-bold mx-auto block my-8"
       >{loading ? <Loader color="#fff" className="animate-spin mx-auto" /> : "Confirm Deliverd"}</button>}

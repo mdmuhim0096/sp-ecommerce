@@ -10,9 +10,10 @@ export const orderStore = create((set, get) => ({
     getOrder: async () => {
         try {
             await axios.get("/order/").then(res => {
-                set({ order: res.data || [] });
+                set({ order: res.data || [], loading: false });
             });
         } catch (error) {
+            set({ loading: false })
             toast.error(error.response.data.message || error.message);
         }
     },
@@ -23,22 +24,26 @@ export const orderStore = create((set, get) => ({
                 set({ counter: res.data || 0 });
             });
         } catch (error) {
-            toast.error(error.response.data.message || error.message);
+            toast.error(error?.response?.data?.message || error.message);
         }
     },
 
     rejectOrder: async (id) => {
         try {
+            set({ loading: true })
             await axios.put(`/order/reject/${id}`).then(() => {
                 get().getOrder();
+                set({ loading: false });
                 toast.success("Order rejected successfully");
             });
         } catch (error) {
+            set({ loading: false });
             toast.error(error.response.data.message || error.message);
         }
     },
 
     deleteOrder: async (id) => {
+        console.log("i am here")
         try {
             await axios.delete(`/order/${id}`).then(() => {
                 const updatedOrders = get().order.filter(order => order._id !== id);
@@ -52,11 +57,14 @@ export const orderStore = create((set, get) => ({
 
     makeApproved: async (id) => {
         try {
+            set({ loading: true })
             await axios.put(`/order/approved/${id}`).then(() => {
                 get().getOrder();
+                set({ loading: false })
                 toast.success("Order Approved successfully");
             });
         } catch (error) {
+            set({ loading: false })
             toast.error(error.response.data.message || error.message);
         }
     },
@@ -65,12 +73,10 @@ export const orderStore = create((set, get) => ({
         try {
             set({ loading: true });
             await axios.put(`/order/isdeliverd/${id}`).then(() => {
-                get().getOrderById(id);
                 toast.success("Order Deliverd successfully");
-                set({ loading: false });
+                set({ loading: false, order: res.data || [] });
             }).catch(e => {
                 set({ loading: false });
-                toast.error(e.response.data.message || "faild to confirm");
             })
         } catch (error) {
             toast.error(error.response.data.message || error.message);
@@ -80,7 +86,7 @@ export const orderStore = create((set, get) => ({
     getOrderById: async (id) => {
         try {
             await axios.get(`/order/getOrderById/${id}`).then(res => {
-                set({ order: res.data });
+                set({ order: res.data || [], loading: false });
             });
         } catch (error) {
             toast.error(error.response.data.message || error.message);

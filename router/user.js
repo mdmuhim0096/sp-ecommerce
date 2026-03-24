@@ -192,7 +192,7 @@ route.put("/update_address", protectedRoute, async (req, res) => {
         if (data?.home) _user_.address.home = data.home;
         if (data?.phone) _user_.address.phone = data.phone;
         if (data?.house) _user_.address.house = data.house;
-        
+
         const ___user___ = await _user_.save();
         res.status(200).json(___user___);
     } catch (error) {
@@ -248,5 +248,14 @@ route.put("/update_profile", protectedRoute, upload.single("image"), async (req,
         res.status(500).json({ message: "Server error in update profile route" });
     }
 });
+
+route.get("/orderId", protectedRoute, async (req, res) => {
+    try {
+        res.json(req.user?.orderId);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Server error in orderId route" });
+    }
+})
 
 module.exports = route;

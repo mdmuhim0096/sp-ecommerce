@@ -6,6 +6,7 @@ export const userStore = create((set, get) => ({
 
     loading: false,
     user: null,
+    orderId: null,
 
     login: async (email, password) => {
         try {
@@ -66,10 +67,12 @@ export const userStore = create((set, get) => ({
                 set({ loading: false, user: null });
                 return;
             }
+
             async function fetch_data() {
                 const res = await axios.get("/auth/");
                 set({ user: res.data, loading: false });
             }
+
             fetch_data();
 
         } catch (error) {
@@ -181,6 +184,24 @@ export const userStore = create((set, get) => ({
             toast.success("Profile updated successfully");
 
         } catch (error) {
+            set({ loading: false });
+            toast.error(error.response?.data?.message || "Something went wrong");
+            console.log(error);
+        }
+    },
+
+    hasOrderId: async (condition) => {
+        try {
+            if (condition === true) {
+                await axios.get("/auth/orderId")
+                    .then(res => {
+                        set({ orderId: res.data });
+                    });
+            } else {
+                set({ orderId: null });
+            }
+        }
+        catch (error) {
             set({ loading: false });
             toast.error(error.response?.data?.message || "Something went wrong");
             console.log(error);

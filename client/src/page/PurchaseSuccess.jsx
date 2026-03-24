@@ -8,12 +8,15 @@ import axios from "../lib/axios";
 import toast from "react-hot-toast";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import { Rss } from "lucide-react";
+import { userStore } from "../store/user";
 
 const PurchaseSuccess = () => {
   const [animate, setAnimate] = useState(false);
   const [next, setNext] = useState(false);
   const [isConfetti, setConfetti] = useState(false);
   const { clearCart } = cartStore();
+  const { getUser } = userStore();
 
   const handleClick = () => {
     if (!animate) {
@@ -25,14 +28,17 @@ const PurchaseSuccess = () => {
     }
   };
 
+  const [orderId, setOrderId] = useState(null);
+
   useEffect(() => {
     const sessionId = new URLSearchParams(window.location.search).get("session_id");
-
+    getUser();
     const handleCheckoutSuccess = async (sessionId) => {
       try {
         await axios.post("/payment/checkoutSuccess", {
           sessionId,
         }).then(res => {
+          setOrderId(res.data?.orderId);
           clearCart();
         });
       } catch (error) {
@@ -302,11 +308,22 @@ const PurchaseSuccess = () => {
             >
               Congratulations
             </h1>
-            <h4 className="my-2 text-center text-xl text-white">Order Complete</h4>
-            <div className="w-full text-center transition-all duration-200 hover:text-emerald-300 text-emerald-500 my-4 relative z-50">
-              <Link to={"/shope"}>
-                Continue Shopping <MoveRight className="inline" />
+            <h4 className="my-2 text-center text-xl text-emerald-500">Order Complete</h4>
+            <div className="w-full text-center transition-all duration-200 mt-7 relative z-50 flex flex-col items-center gap-2">
+
+              <Link to={"/shope"}
+                className="flex gap-4 hover:text-blue-300 text-blue-500"
+              >
+                <span>Continue Shopping</span>
+                <MoveRight />
               </Link>
+              <Link to={`/trackorder/${orderId}`}
+                className="flex gap-4 hover:text-orange-300 text-orange-500"
+              >
+                <span>Track Order</span>
+                <Rss />
+              </Link>
+
             </div>
           </motion.div>
         )}

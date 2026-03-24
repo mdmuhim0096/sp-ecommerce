@@ -56,6 +56,10 @@ const User = new mongoose.Schema(
     refreshToken: {
       type: String,
     },
+    orderId: {
+      type: String,
+      default: null
+    }
   },
   {
     timestamps: true,

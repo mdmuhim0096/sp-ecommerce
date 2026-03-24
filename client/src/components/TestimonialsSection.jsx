@@ -246,7 +246,7 @@ const TestimonialsSection = () => {
                             key={testimonial._id}
                             className="rounded-2xl p-6 shadow-sm border border-gray-100/20 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 bg-zinc-800/40"
                         >
-                            {console.log(data)}
+                        
                             {/* Quote SVG */}
                             <div className="mb-4">
                                 <svg

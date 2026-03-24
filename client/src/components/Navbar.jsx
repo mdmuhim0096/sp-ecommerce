@@ -1,18 +1,18 @@
 
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { Lock, LogOut, ShoppingCart, Menu, X, ScrollText, House, User } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
+import { Lock, LogOut, ShoppingCart, Menu, X, ScrollText, House, User, Rss } from "lucide-react";
 import { userStore } from "../store/user";
 import { cartStore } from "../store/cart";
 import { orderStore } from "../store/order";
 import { changeGoogleLanguage, getCurrentGoogleLanguage } from "../lib/Translate";
 
 const Navbar = () => {
-
-    const { user, logout } = userStore();
+    const pathName = useLocation().pathname;
+    const { user, logout, hasOrderId } = userStore();
     const { cart, getAllProduct } = cartStore();
     const { getCount, counter } = orderStore();
-
+    const orderId = userStore(state => state.orderId);
     const [isMenu, setIsMenu] = useState(false);
     const [width, setWidth] = useState(window.innerWidth);
 
@@ -143,6 +143,11 @@ const Navbar = () => {
         if (width >= 768) setIsMenu(false);
     }, [width]);
 
+    useEffect(() => {
+        hasOrderId(true);
+    }, [pathName]);
+
+    console.log("from navbar----", orderId);
 
     return (
         <div className="flex justify-between items-center py-2 bg-zinc-900 border-b
@@ -159,6 +164,16 @@ const Navbar = () => {
                     : "flex-row items-center justify-between gap-3 static"
                     } text-gray-300`}
             >
+                {orderId && <Link
+                    to={`/trackorder/${orderId}`}
+                    className="p-1 flex items-center sm:justify-between gap-3 
+                        sm:gap-1 hover:text-white 
+            transition-all duration-150 border border-zinc-800 px-2 py-[3px]
+             rounded-md hover:border-zinc-700"
+                >
+                    <Rss className="inline" size={19} color="#fff" />
+                    <span>Track Order</span>
+                </Link>}
                 <Link
                     to={"/"}
                     className="p-1 flex items-center sm:justify-between gap-3 

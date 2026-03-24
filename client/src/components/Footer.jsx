@@ -5,12 +5,13 @@ import { useState } from "react";
 import axios from "../lib/axios";
 
 const Footer = () => {
+    
     const [email, setEmail] = useState("");
 
-    const handleSubscribe = () => {
+    const handleSubscribe = async () => {
 
         if (!email) toast.error("Please enter a valid email");
-        axios.post("/subscribe", { email })
+        await axios.post("/subscribe", { email })
             .then((res) => {
                 toast.success(res.data.message);
                 setEmail("");
